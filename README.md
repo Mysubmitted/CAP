@@ -24,7 +24,6 @@ The code is built with **Python 3.9** and **PyTorch 1.12+**.
 
 We recommend using Anaconda to manage the environment.
 
-```bash
 # Create environment
 conda create -n cap_gnn python=3.9
 conda activate cap_gnn
