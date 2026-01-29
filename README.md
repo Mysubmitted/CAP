@@ -36,3 +36,57 @@ pip install torch==1.12.1+cu113 -f https://download.pytorch.org/whl/cu113/torch_
 # Install Graph Dependencies
 pip install torch-geometric
 pip install scikit-learn tqdm ogb
+
+### 2. Run Code
+
+#### 🟢 For Graph Classification
+
+The script `graph_task.py` handles graph-level tasks.
+
+**Example: Run CAP on NCI109 (50-shot)**
+
+Bash
+# Modify parameters in the command line as needed
+python graph_task.py \
+  --dataset MUTAG \
+  --ckpt "model/MUTAG_edgepred_hid128.pth.pth" \
+  --assigner_ckpt "model/MUTAG_edgepred_hid128.pth.pth" \
+  --prompt sgp \
+  --K 8 \
+  --shots 50 \
+  --batch_size 32 \
+  --lr 0.005 \
+  --test_frac 0.4
+#### For Node Classification
+
+The script `node_task.py` handles node-level tasks.
+
+**Example: Run CAP on Cora (5-shot)**
+
+Bash
+# This script supports grid search over hyperparameters
+python node_task.py \
+  --dataset Cora \
+  --ckpt model/Cora_edgepred_hid128.pth\
+  --shots 5 \
+  --ssl graphcl \
+  --hidden_dim 128 \
+  --gpu 0\
+  --K 16
+
+## Parameters
+
+Below are the common arguments used in the training scripts:
+
+| **Parameter**     | **Description**                                       | **Default**               |
+| ----------------- | ----------------------------------------------------- | ------------------------- |
+| `--dataset`       | Target dataset name (e.g., `Cora`, `NCI109`, `MUTAG`) | `MUTAG` / `Cora`          |
+| `--shots`         | Number of samples per class for few-shot learning     | `50` (Graph) / `5` (Node) |
+| `--ckpt`          | Path to the pre-trained GNN model checkpoint          | Required                  |
+| `--assigner_ckpt` | Path to the assigner checkpoint                       | `""`                      |
+| `--prompt`        | Prompting method to use (`sgp`, `gpf`, `none`)        | `sgp`                     |
+| `--K`             | Number of clusters/prototypes for the assigner        | `16`                      |
+| `--lr`            | Learning rate for the prompt tuning                   | `0.005`                   |
+| `--hidden_dim`    | Hidden dimension size of the GNN                      | `128`                     |
+| `--batch_size`    | Batch size for training                               | `128`                     |
+| `--seeds`         | List of random seeds for reproducibility              | `0,1,2,3,4`               |
